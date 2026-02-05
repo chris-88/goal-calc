@@ -103,19 +103,28 @@ function App() {
     parsedCurrentSavings >= 0 &&
     parsedMonthlySavings >= 0
 
-  const depositPct = 0.1
+  const depositFloorPercent = 0.1
   const monthlyGrowth = Math.pow(1 + parsedGrowthRate / 100, 1 / 12) - 1
+
+  const maxMortgage = parsedGrossIncome * 4
+  const requiredDepositEuroToday =
+    parsedTargetPrice > 0 ? Math.max(0, parsedTargetPrice - maxMortgage) : 0
+  const requiredDepositPercentToday =
+    parsedTargetPrice > 0 ? requiredDepositEuroToday / parsedTargetPrice : 0
+  const depositPercentUsed = Math.max(depositFloorPercent, requiredDepositPercentToday)
+
+  const bucket4Triggered = requiredDepositPercentToday > depositFloorPercent
 
   let depositToday: number | null = null
   let catchMonth: number | null = null
   let depositAtCatch: number | null = null
 
   if (hasRequiredInputs) {
-    depositToday = parsedTargetPrice * depositPct
+    depositToday = parsedTargetPrice * depositPercentUsed
 
     for (let t = 0; t <= 480; t += 1) {
       const savings = parsedCurrentSavings + parsedMonthlySavings * t
-      const depositTarget = depositToday * Math.pow(1 + monthlyGrowth, t)
+      const depositTarget = parsedTargetPrice * depositPercentUsed * Math.pow(1 + monthlyGrowth, t)
 
       if (savings >= depositTarget) {
         catchMonth = t
@@ -137,7 +146,31 @@ function App() {
       }
     }
 
-    if (parsedCurrentSavings >= depositToday) {
+    const depositAlreadySaved = parsedCurrentSavings >= depositToday
+    const notReachable = catchMonth === null
+
+    if (bucket4Triggered) {
+      return {
+        label: 'Target looks high vs income',
+        detail: 'Rule-of-thumb only. This is not a lending decision.',
+        index: 3,
+        outcomeSentence: notReachable
+          ? 'Target looks high vs income (rule-of-thumb). Not reachable under current assumptions.'
+          : 'Target looks high vs income (rule-of-thumb).',
+        timeToSave: depositAlreadySaved
+          ? 'Deposit already saved'
+          : notReachable
+            ? 'Not reachable'
+            : formatDuration(catchMonth ?? 0),
+        supportingLine: depositAlreadySaved
+          ? 'Your current savings meet the required deposit at today’s prices.'
+          : notReachable
+            ? 'At this saving rate and price growth, the deposit keeps moving out of reach.'
+            : '',
+      }
+    }
+
+    if (depositAlreadySaved) {
       return {
         label: 'Deposit saved',
         detail: 'Your current savings meet the 10% deposit required at today’s prices.',
@@ -148,7 +181,7 @@ function App() {
       }
     }
 
-    if (catchMonth === null) {
+    if (notReachable) {
       return {
         label: 'Can’t save deposit',
         detail:
@@ -184,6 +217,7 @@ function App() {
 
   const depositAtCatchDisplay = depositAtCatch === null ? '—' : formatCurrency(depositAtCatch)
   const catchTimeDisplay = verdict.timeToSave
+  const depositPercentDisplay = `${(depositPercentUsed * 100).toFixed(0)}%`
 
   const segments = [
     'Can’t save',
@@ -327,7 +361,7 @@ function App() {
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                    Deposit required
+                    Deposit required {bucket4Triggered ? `(${depositPercentDisplay})` : ''}
                   </p>
                   <p className="mt-1 text-xl font-semibold text-foreground">
                     {depositAtCatchDisplay}
@@ -339,6 +373,12 @@ function App() {
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">{verdict.outcomeSentence}</p>
               <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">{verdict.label}</Badge>
+                {bucket4Triggered ? (
+                  <Badge variant="outline" className="text-xs text-muted-foreground">
+                    Rule-of-thumb only
+                  </Badge>
+                ) : null}
               </div>
               <p className="text-sm text-muted-foreground">{verdict.detail}</p>
               <div className="grid grid-cols-4 gap-2">
