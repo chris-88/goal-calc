@@ -17,7 +17,7 @@ This repo follows the product brief as the single source of truth.
 
 ## Stack
 - Vite + React + TypeScript
-- Tailwind + shadcn/ui (to be added)
+- Tailwind + shadcn/ui
 - GitHub Pages deployment to `https://calc.homeown.ie`
 
 ## Dev
@@ -36,7 +36,7 @@ npm run preview
 
 ## Status
 - Step 1 (scaffold) complete
-- Step 1 (shadcn layout) pending
+- Step 1 (shadcn layout) complete
 
 ## Build Sequence
 See `.docs/brief.md` for the step-by-step build plan and definition of done.
