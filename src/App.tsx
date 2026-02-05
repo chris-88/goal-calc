@@ -1,4 +1,6 @@
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 
 function App() {
   return (
@@ -11,9 +13,9 @@ function App() {
             </p>
             <p className="text-sm text-ink-600">calc.homeown.ie</p>
           </div>
-          <div className="rounded-full border border-ink-200/70 bg-white/80 px-4 py-2 text-xs text-ink-500">
+          <Badge variant="secondary" className="rounded-full px-4 py-2 text-xs">
             Diagnostic only · No recommendations
-          </div>
+          </Badge>
         </header>
 
         <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16">
@@ -29,20 +31,20 @@ function App() {
                 not to tell you what to do.
               </p>
               <div className="flex flex-wrap gap-3">
-                <div className="rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-2 text-sm text-ink-600">
+                <Badge variant="outline" className="rounded-2xl px-4 py-2 text-sm text-ink-600">
                   UK English · EUR
-                </div>
-                <div className="rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-2 text-sm text-ink-600">
+                </Badge>
+                <Badge variant="outline" className="rounded-2xl px-4 py-2 text-sm text-ink-600">
                   Indicative only
-                </div>
-                <div className="rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-2 text-sm text-ink-600">
+                </Badge>
+                <Badge variant="outline" className="rounded-2xl px-4 py-2 text-sm text-ink-600">
                   No tracking
-                </div>
+                </Badge>
               </div>
             </div>
-            <Card className="flex flex-col justify-between">
+            <Card className="flex flex-col justify-between border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
               <CardHeader>
-                <CardTitle>Results</CardTitle>
+                <CardTitle className="font-display text-xl text-ink-900">Results</CardTitle>
                 <CardDescription>
                   Once inputs are added, the calculator will show your catch time, age at
                   catch, and an indicative verdict meter.
@@ -57,9 +59,9 @@ function App() {
           </section>
 
           <section className="grid gap-6 md:grid-cols-2">
-            <Card>
+            <Card className="border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
               <CardHeader>
-                <CardTitle>Your target</CardTitle>
+                <CardTitle className="font-display text-xl text-ink-900">Your target</CardTitle>
                 <CardDescription>Property price and deposit target settings.</CardDescription>
               </CardHeader>
               <CardContent>
@@ -67,9 +69,11 @@ function App() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
               <CardHeader>
-                <CardTitle>Your monthly picture</CardTitle>
+                <CardTitle className="font-display text-xl text-ink-900">
+                  Your monthly picture
+                </CardTitle>
                 <CardDescription>Income, needs, wants, and savings pace.</CardDescription>
               </CardHeader>
               <CardContent>
@@ -77,9 +81,9 @@ function App() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
               <CardHeader>
-                <CardTitle>Assumptions</CardTitle>
+                <CardTitle className="font-display text-xl text-ink-900">Assumptions</CardTitle>
                 <CardDescription>Inflation, price growth, and mortgage context.</CardDescription>
               </CardHeader>
               <CardContent>
@@ -87,9 +91,9 @@ function App() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
               <CardHeader>
-                <CardTitle>Verdict meter</CardTitle>
+                <CardTitle className="font-display text-xl text-ink-900">Verdict meter</CardTitle>
                 <CardDescription>
                   An indicative meter will highlight where you land today.
                 </CardDescription>
@@ -100,13 +104,19 @@ function App() {
             </Card>
           </section>
 
-          <section className="rounded-3xl border border-ink-200/70 bg-white/80 p-6 text-sm text-ink-600 shadow-soft">
-            <p className="font-medium text-ink-800">Rule-of-thumb only.</p>
-            <p className="mt-2">
-              This is not a lending decision. Mortgage limits and terms vary by lender,
-              and results are based on the assumptions you provide.
-            </p>
-          </section>
+          <Card className="border-ink-100/70 bg-white/85 shadow-soft backdrop-blur">
+            <CardContent className="space-y-3 text-sm text-ink-600">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">Rule-of-thumb only</Badge>
+                <Separator orientation="vertical" className="h-4" />
+                <span className="text-xs text-ink-500">Indicative outputs</span>
+              </div>
+              <p>
+                This is not a lending decision. Mortgage limits and terms vary by lender,
+                and results are based on the assumptions you provide.
+              </p>
+            </CardContent>
+          </Card>
         </main>
       </div>
     </div>
