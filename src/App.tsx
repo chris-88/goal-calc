@@ -223,7 +223,7 @@ function App() {
     'Can’t save',
     '> 5 years',
     '≤ 5 years',
-    'Deposit saved',
+    bucket4Triggered ? 'Target looks high' : 'Deposit saved',
   ]
 
   return (
