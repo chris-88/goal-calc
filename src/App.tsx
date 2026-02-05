@@ -194,7 +194,7 @@ function App() {
       }
     }
 
-    if (catchMonth <= 60) {
+    if (catchMonth !== null && catchMonth <= 60) {
       return {
         label: 'Will save deposit ≤ 5 years',
         detail: 'The deposit is reachable within five years under current assumptions.',
