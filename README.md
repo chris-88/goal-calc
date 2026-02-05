@@ -5,8 +5,8 @@ Static, single-page calculator for **calc.homeown.ie**. The goal is to give user
 This repo follows the product brief as the single source of truth.
 
 ## Key Docs
-- `.docs/brief.md` — Full product intent, UX rules, and calculation model
-- `.docs/threshold.md` — Deterministic affordability threshold for verdict bucket 1
+- `.docs/brief.md` — Full product intent, UX rules, and calculation model (local-only; ignored by git)
+- `.docs/threshold.md` — Deterministic affordability threshold for verdict bucket 1 (local-only; ignored by git)
 
 ## Scope (v1)
 - Single-route React app (`/` only)
@@ -15,13 +15,31 @@ This repo follows the product brief as the single source of truth.
 - UK English tone with strict language guardrails
 - EUR with Irish number formatting
 
-## Planned Stack
+## Stack
 - Vite + React + TypeScript
-- Tailwind + shadcn/ui
+- Tailwind + shadcn/ui (to be added)
 - GitHub Pages deployment to `https://calc.homeown.ie`
 
-## Development
-Project scaffold and scripts will be added in the build sequence. Once the scaffold lands, this section will include install/run/build commands.
+## Dev
+```bash
+npm install
+npm run dev
+```
+
+Default dev server: `http://localhost:5173`
+
+## Build
+```bash
+npm run build
+npm run preview
+```
+
+## Status
+- Step 1 (scaffold) complete
+- Step 1 (shadcn layout) pending
 
 ## Build Sequence
 See `.docs/brief.md` for the step-by-step build plan and definition of done.
+
+## Maintenance
+Keep this `README.md` updated as the project evolves and milestones land in GitHub.
