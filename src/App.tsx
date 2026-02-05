@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
@@ -219,6 +220,80 @@ function App() {
   const catchTimeDisplay = verdict.timeToSave
   const depositPercentDisplay = `${(depositPercentUsed * 100).toFixed(0)}%`
 
+  const monthsParam = catchMonth === null ? 'na' : `${catchMonth}`
+  const tppParam = parsedTargetPrice ? `${parsedTargetPrice}` : ''
+  const ghiParam = parsedGrossIncome ? `${parsedGrossIncome}` : ''
+
+  type BucketKey = 'CANT_SAVE' | 'OVER_5Y' | 'UNDER_5Y' | 'DEPOSIT_SAVED' | 'INCOME_MISMATCH'
+
+  const bucketKey: BucketKey = bucket4Triggered
+    ? 'INCOME_MISMATCH'
+    : verdict.timeToSave === 'Not reachable'
+      ? 'CANT_SAVE'
+      : verdict.timeToSave === 'Deposit already saved'
+        ? 'DEPOSIT_SAVED'
+        : catchMonth !== null && catchMonth <= 60
+          ? 'UNDER_5Y'
+          : 'OVER_5Y'
+
+  const ctaVariants: Record<
+    BucketKey,
+    {
+      headline: string
+      body: string
+      primaryLabel: string
+      secondaryLabel?: string
+      note?: string
+    }
+  > = {
+    CANT_SAVE: {
+      headline: 'You’re not falling behind — the goalpost is moving.',
+      body:
+        'When property prices rise faster than savings, the deposit target keeps moving away. Homeown is designed for this situation, allowing you to live in the home while building equity at a fixed purchase price.',
+      primaryLabel: 'See how the Homeown pathway works',
+      secondaryLabel: 'Talk to us about your situation',
+      note: 'We’ll explain the structure clearly and tell you honestly whether it’s appropriate.',
+    },
+    OVER_5Y: {
+      headline: 'You can get there — but the market stays in control.',
+      body:
+        'Even steady savers remain exposed to rising prices while building a deposit. Homeown fixes the purchase price upfront and converts monthly payments into pathway equity over time.',
+      primaryLabel: 'Compare your current path with Homeown',
+      secondaryLabel: 'Understand how the pathway works',
+    },
+    UNDER_5Y: {
+      headline: 'You’re in a strong position.',
+      body:
+        'You may not need Homeown. Some people in this position still choose it to remove market risk while preparing for a mortgage.',
+      primaryLabel: 'See when Homeown makes sense',
+      secondaryLabel: 'When it doesn’t',
+    },
+    DEPOSIT_SAVED: {
+      headline: 'You’ve done the hard part.',
+      body:
+        'If you’re not ready to buy immediately, Homeown can purchase the home and allow you to build further equity while preparing for a mortgage — at a fixed price.',
+      primaryLabel: 'Learn how the Homeown pathway works',
+      secondaryLabel: 'Buying now vs waiting',
+    },
+    INCOME_MISMATCH: {
+      headline: 'The deposit is achievable — income is the constraint.',
+      body:
+        'When income limits mortgage size, the deposit requirement increases. Homeown can support deposit-ready but mortgage-limited clients through a structured pathway to ownership.',
+      primaryLabel: 'Talk to Homeown',
+      note: 'Rule-of-thumb only. We’ll explain what this means in practice.',
+    },
+  }
+
+  const cta = ctaVariants[bucketKey]
+  const ctaBaseUrl = '/talk-to-homeown'
+  const ctaQuery = new URLSearchParams({
+    bucket: bucketKey,
+    months: monthsParam,
+    ...(tppParam ? { tpp: tppParam } : {}),
+    ...(ghiParam ? { ghi: ghiParam } : {}),
+  }).toString()
+  const ctaHref = `${ctaBaseUrl}?${ctaQuery}`
+
   const segments = [
     'Can’t save',
     '> 5 years',
@@ -397,6 +472,31 @@ function App() {
                 ))}
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <p className="text-xs text-muted-foreground">
+              Based on the inputs you entered above.
+            </p>
+            <CardTitle>{cta.headline}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">{cta.body}</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button asChild>
+                <a href={ctaHref}>{cta.primaryLabel}</a>
+              </Button>
+              {cta.secondaryLabel ? (
+                <Button variant="ghost" asChild>
+                  <a href={ctaHref}>{cta.secondaryLabel}</a>
+                </Button>
+              ) : null}
+            </div>
+            {cta.note ? (
+              <p className="text-xs text-muted-foreground">{cta.note}</p>
+            ) : null}
           </CardContent>
         </Card>
       </div>
