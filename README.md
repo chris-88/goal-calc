@@ -37,6 +37,8 @@ npm run preview
 ## Status
 - Step 1 (scaffold) complete
 - Step 1 (shadcn layout) complete
+- CR-002 (simple v1) implemented
+- Step 11 (GH Pages deployment) pending — handled by repo owner
 
 ## Build Sequence
 See `.docs/brief.md` for the step-by-step build plan and definition of done.
