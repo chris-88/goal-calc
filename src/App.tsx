@@ -188,6 +188,7 @@ function App() {
     '≤ 5 years',
     'Deposit saved',
   ]
+  const segmentColors = ['#48252F', '#123A28', '#123A28', '#E7D4BB']
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -337,9 +338,8 @@ function App() {
                 {segments.map((segment, index) => (
                   <div
                     key={segment}
-                    className={`h-2 rounded-full ${
-                      index === verdict.index ? 'bg-foreground' : 'bg-muted'
-                    }`}
+                    className={`h-2 rounded-full ${index === verdict.index ? '' : 'opacity-40'}`}
+                    style={{ backgroundColor: segmentColors[index] }}
                   />
                 ))}
               </div>
