@@ -128,74 +128,65 @@ function App() {
         label: 'Add inputs to calculate',
         detail: 'Enter all five fields to see your result.',
         index: 0,
-        ruleOfThumb: false,
+        outcomeSentence: 'Add your details to see whether the deposit is reachable.',
+        timeToSave: 'Not reachable',
+        supportingLine: '',
       }
     }
 
     if (parsedCurrentSavings >= depositToday) {
       return {
         label: 'Deposit saved',
-        detail: 'Current savings already cover the 10% deposit required today.',
+        detail: 'Your current savings meet the 10% deposit required at today’s prices.',
         index: 3,
-        ruleOfThumb: false,
+        outcomeSentence: 'You already have the required deposit.',
+        timeToSave: 'Deposit already saved',
+        supportingLine: 'Your current savings meet the 10% deposit required at today’s prices.',
       }
     }
 
     if (catchMonth === null) {
       return {
-        label: "Can't save deposit",
-        detail: 'Not reached within the 40-year horizon under current assumptions.',
+        label: 'Can’t save deposit',
+        detail:
+          'Even over a long time horizon, rising prices outpace monthly savings under these assumptions.',
         index: 0,
-        ruleOfThumb: false,
-      }
-    }
-
-    const ruleTriggered = parsedTargetPrice > 4 * parsedGrossIncome + depositToday
-
-    if (ruleTriggered) {
-      return {
-        label: 'Deposit saved!',
-        detail: 'Rule-of-thumb only. This is not a lending decision.',
-        index: 3,
-        ruleOfThumb: true,
+        outcomeSentence: 'At this saving rate, the deposit never catches up.',
+        timeToSave: 'Not reachable',
+        supportingLine:
+          'At this saving rate and price growth, the deposit keeps moving out of reach.',
       }
     }
 
     if (catchMonth <= 60) {
       return {
-        label: 'Will save deposit ≤ 5y',
-        detail: 'Deposit is reachable within five years under current assumptions.',
+        label: 'Will save deposit ≤ 5 years',
+        detail: 'The deposit is reachable within five years under current assumptions.',
         index: 2,
-        ruleOfThumb: false,
+        outcomeSentence: 'You’ll save the deposit within five years.',
+        timeToSave: formatDuration(catchMonth),
+        supportingLine: '',
       }
     }
 
     return {
-      label: 'Will save deposit > 5y',
-      detail: 'Deposit is reachable, but it takes more than five years.',
+      label: 'Will save deposit > 5 years',
+      detail: 'The deposit is reachable, but it takes longer than five years at this saving pace.',
       index: 1,
-      ruleOfThumb: false,
+      outcomeSentence: 'You’ll save the deposit, but it takes more than five years.',
+      timeToSave: formatDuration(catchMonth ?? 0),
+      supportingLine: '',
     }
   })()
 
-  const highlightIndex =
-    depositToday !== null && parsedCurrentSavings >= depositToday ? 3 : verdict.index
-
-  const verdictLine = !hasRequiredInputs
-    ? 'Verdict: Add the five inputs to calculate.'
-    : catchMonth === null
-      ? 'Verdict: You never catch the deposit (within 40 years).'
-      : `Verdict: You catch the deposit in ${formatDuration(catchMonth)}.`
-
-  const depositTodayDisplay = depositToday === null ? '—' : formatCurrency(depositToday)
   const depositAtCatchDisplay = depositAtCatch === null ? '—' : formatCurrency(depositAtCatch)
-  const catchTimeDisplay = catchMonth === null ? 'Never' : formatDuration(catchMonth)
+  const catchTimeDisplay = verdict.timeToSave
 
   const segments = [
-    'Can’t save deposit',
-    'Will save deposit > 5y',
-    'Will save deposit ≤ 5y',
-    'Deposit already saved',
+    'Can’t save',
+    '> 5 years',
+    '≤ 5 years',
+    'Deposit saved',
   ]
 
   return (
@@ -206,13 +197,19 @@ function App() {
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
               Pathway Calculator
             </p>
+            <h1 className="text-2xl font-semibold text-foreground">
+              A calm reality check on saving a deposit
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              See whether your savings can catch a moving property market.
+            </p>
           </div>
         </header>
 
         <Card>
           <CardHeader>
-            <CardTitle>Your details</CardTitle>
-            <CardDescription>Five inputs to calculate your deposit saving pathway.</CardDescription>
+            <CardTitle>Your starting point</CardTitle>
+            <CardDescription>Adjust the sliders to reflect your situation today.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">
@@ -227,10 +224,13 @@ function App() {
                 value={grossAnnualIncome}
                 onValueChange={handleGrossIncomeChange}
               />
+              <p className="text-xs text-muted-foreground">
+                Used only as a high-level sense check. Not a lending assessment.
+              </p>
             </div>
 
             <div className="space-y-3">
-              <Label>Target property price (today)</Label>
+              <Label>Target property price (current market)</Label>
               <p className="text-2xl font-semibold text-foreground">
                 {formatCurrency(targetPropertyPrice[0])}
               </p>
@@ -258,7 +258,7 @@ function App() {
                 />
               </div>
               <div className="space-y-3">
-                <Label>Monthly savings</Label>
+                <Label>Monthly savings (towards a deposit)</Label>
                 <p className="text-xl font-semibold text-foreground">
                   {formatCurrency(monthlySavings[0])}
                 </p>
@@ -285,7 +285,7 @@ function App() {
                 onValueChange={setPropertyGrowthRate}
               />
               <p className="text-sm text-muted-foreground">
-                Property price appreciation over the last five years has been between ~6–8%.
+                How fast prices are rising in the areas you’re considering. Over the last 5 years, property appreciation has been between ~6-8%.
               </p>
             </div>
           </CardContent>
@@ -296,7 +296,7 @@ function App() {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <CardTitle>Your deposit reality</CardTitle>
             </div>
-            <CardDescription>Time to save the deposit and the target amount.</CardDescription>
+            <CardDescription>How long it takes to reach the deposit.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {!hasRequiredInputs ? (
@@ -313,6 +313,9 @@ function App() {
                     Time to save
                   </p>
                   <p className="mt-1 text-2xl font-semibold text-foreground">{catchTimeDisplay}</p>
+                  {verdict.supportingLine ? (
+                    <p className="mt-2 text-sm text-muted-foreground">{verdict.supportingLine}</p>
+                  ) : null}
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -326,12 +329,8 @@ function App() {
             )}
 
             <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">{verdict.outcomeSentence}</p>
               <div className="flex flex-wrap items-center gap-2">
-                {verdict.ruleOfThumb ? (
-                  <Badge variant="outline" className="text-xs text-muted-foreground">
-                    Rule-of-thumb only
-                  </Badge>
-                ) : null}
               </div>
               <p className="text-sm text-muted-foreground">{verdict.detail}</p>
               <div className="grid grid-cols-4 gap-2">
@@ -339,7 +338,7 @@ function App() {
                   <div
                     key={segment}
                     className={`h-2 rounded-full ${
-                      index === highlightIndex ? 'bg-foreground' : 'bg-muted'
+                      index === verdict.index ? 'bg-foreground' : 'bg-muted'
                     }`}
                   />
                 ))}
