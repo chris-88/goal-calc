@@ -65,5 +65,6 @@
     background-color: #123A28;
     color: #E7D4BB;
     @apply antialiased;
+    user-select: none;
   }
 }
