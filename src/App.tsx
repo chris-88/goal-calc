@@ -31,10 +31,13 @@ function App() {
   const [monthlySavings, setMonthlySavings] = useState([DEFAULTS.monthlySavings])
   const [propertyGrowthRate, setPropertyGrowthRate] = useState([DEFAULTS.propertyGrowthRate])
 
+  const clampTargetPrice = (income: number, target: number) =>
+    Math.min(target, income * 5)
+
   const handleGrossIncomeChange = (value: number[]) => {
     const nextIncome = value[0] ?? 0
     setGrossAnnualIncome([nextIncome])
-    setTargetPropertyPrice([nextIncome * 4])
+    setTargetPropertyPrice([clampTargetPrice(nextIncome, nextIncome * 4)])
   }
 
   useEffect(() => {
@@ -237,10 +240,14 @@ function App() {
               </p>
               <Slider
                 min={RANGES.targetPropertyPrice.min}
-                max={RANGES.targetPropertyPrice.max}
+                max={Math.min(RANGES.targetPropertyPrice.max, grossAnnualIncome[0] * 5)}
                 step={RANGES.targetPropertyPrice.step}
                 value={targetPropertyPrice}
-                onValueChange={setTargetPropertyPrice}
+                onValueChange={(value) =>
+                  setTargetPropertyPrice([
+                    clampTargetPrice(grossAnnualIncome[0], value[0] ?? 0),
+                  ])
+                }
               />
             </div>
 
