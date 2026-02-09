@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Compass, Flag, Navigation } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -320,7 +321,10 @@ function App() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Your starting point</CardTitle>
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle>Your starting point</CardTitle>
+              <Navigation className="h-10 w-10 shrink-0 text-muted-foreground" aria-hidden="true" />
+            </div>
             <CardDescription>Adjust the sliders to reflect your situation today.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -411,6 +415,7 @@ function App() {
           <CardHeader className="space-y-1">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <CardTitle>Your deposit reality</CardTitle>
+              <Flag className="h-10 w-10 shrink-0 text-muted-foreground" aria-hidden="true" />
             </div>
             <CardDescription>How long it takes to reach the deposit.</CardDescription>
           </CardHeader>
@@ -480,7 +485,10 @@ function App() {
             <p className="text-xs text-muted-foreground">
               Based on the inputs you entered above.
             </p>
-            <CardTitle>{cta.headline}</CardTitle>
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle>{cta.headline}</CardTitle>
+              <Compass className="h-10 w-10 shrink-0 text-muted-foreground" aria-hidden="true" />
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">{cta.body}</p>

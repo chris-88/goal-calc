@@ -34,6 +34,20 @@ npm run build
 npm run preview
 ```
 
+## Deploy (GitHub Pages)
+Deployment uses `gh-pages` and the Vite base path is toggled via `GITHUB_PAGES=true`
+in `vite.config.ts`.
+
+```bash
+# one-time: make sure the gh-pages branch exists and you have permissions
+GITHUB_PAGES=true npm run deploy
+```
+
+Notes:
+- `npm run deploy` runs `npm run build` via `predeploy`.
+- The base path is `/goal-calc/` when `GITHUB_PAGES=true`, matching the repo name.
+- The `gh-pages` package publishes the `dist` folder to the `gh-pages` branch.
+
 ## Status
 - Step 1 (scaffold) complete
 - Step 1 (shadcn layout) complete
